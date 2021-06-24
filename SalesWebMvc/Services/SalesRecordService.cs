@@ -21,12 +21,12 @@ namespace SalesWebMvc.Services
         {
             var result = from obj in _context.SalesRecord select obj;
 
-            if(minDate.HasValue)
+            if (minDate.HasValue)
             {
                 result = result.Where(x => x.Date >= minDate.Value);
             }
 
-            if(maxDate.HasValue)
+            if (maxDate.HasValue)
             {
                 result = result.Where(x => x.Date <= maxDate);
             }
@@ -52,12 +52,13 @@ namespace SalesWebMvc.Services
                 result = result.Where(x => x.Date <= maxDate);
             }
 
-            return await result
+            var dadosSales = await result
                 .Include(x => x.Seller)
                 .Include(x => x.Seller.Department)
                 .OrderByDescending(x => x.Date)
-                .GroupBy(x => x.Seller.Department)
                 .ToListAsync();
+
+            return dadosSales.GroupBy(x => x.Seller.Department).ToList();
         }
     }
 }
